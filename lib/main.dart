@@ -1,44 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:expense_tracker/widgets/expenses.dart';
 
-var kColorScheme = ColorScheme.fromSeed(
+final kColorScheme = ColorScheme.fromSeed(
   seedColor: const Color.fromARGB(255, 96, 59, 180),
 );
 
-var kDarkColorSceme = ColorScheme.fromSeed(
+final kDarkColorScheme = ColorScheme.fromSeed(
   brightness: Brightness.dark,
   seedColor: const Color.fromARGB(255, 5, 99, 125),
 );
 
+CardTheme buildCardTheme(Color cardColor) {
+  return CardTheme(
+    color: cardColor,
+    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+  );
+}
+
 void main() {
   runApp(
     MaterialApp(
+      themeMode: ThemeMode.system,
       darkTheme: ThemeData.dark().copyWith(
-        colorScheme: kDarkColorSceme,
-        cardTheme: const CardTheme().copyWith(
-          color: kDarkColorSceme.secondaryContainer,
-          margin: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 8,
-          ),
-        ),
+        colorScheme: kDarkColorScheme,
+        cardTheme: buildCardTheme(kDarkColorScheme.secondaryContainer),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: kDarkColorSceme.primaryContainer,
-            foregroundColor: kDarkColorSceme.onPrimaryContainer,
+            backgroundColor: kDarkColorScheme.primaryContainer,
+            foregroundColor: kDarkColorScheme.onPrimaryContainer,
           ),
         ),
       ),
-      theme: ThemeData().copyWith(
+      theme: ThemeData.light().copyWith(
         colorScheme: kColorScheme,
         appBarTheme: const AppBarTheme().copyWith(
           backgroundColor: kColorScheme.onPrimaryContainer,
           foregroundColor: kColorScheme.primaryContainer,
         ),
-        cardTheme: const CardTheme().copyWith(
-          color: kColorScheme.secondaryContainer,
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        ),
+        cardTheme: buildCardTheme(kColorScheme.secondaryContainer),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             backgroundColor: kColorScheme.primaryContainer,
