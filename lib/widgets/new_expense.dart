@@ -89,14 +89,13 @@ class _NewExpenseState extends State<NewExpense> {
           padding: EdgeInsets.fromLTRB(16, 48, 16, keyboardSpace + 16),
           child: Form(
             key: _formKey,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
             child: Column(
               children: [
                 TextFormField(
                   controller: _titleController,
                   maxLength: 50,
-                  decoration: InputDecoration(
-                    labelText: 'Title',
-                  ),
+                  decoration: InputDecoration(labelText: 'Title'),
                   validator: (value) {
                     if (value == null || _titleController.text.trim().isEmpty) {
                       return 'Please make sure a valid title is entered';
@@ -128,64 +127,48 @@ class _NewExpenseState extends State<NewExpense> {
                         ),
                       ),
                     ),
-                    SizedBox(
-                      width: 16,
-                    ),
+                    SizedBox(width: 16),
                     Expanded(
-                      child: FormField<DateTime>(
-                        validator: (value) {
-                          if (_selectedDate == null) {
-                            return 'Select a date';
-                          }
-                          return null;
-                        },
-                        builder: (fieldState) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(_selectedDate == null
-                                      ? 'No date selected'
-                                      : formatter.format(_selectedDate!)),
-                                  IconButton(
-                                    icon: Icon(Icons.calendar_month),
-                                    onPressed: () async {
-                                      final pickedDate =
-                                          await _presentDatePicker();
-                                      if (pickedDate != null) {
-                                        setState(() {
-                                          _selectedDate = pickedDate;
-                                        });
-                                        fieldState.didChange(pickedDate);
-                                      }
-                                    },
-                                  ),
-                                ],
+                              Text(_selectedDate == null
+                                  ? 'No date selected'
+                                  : formatter.format(_selectedDate!)),
+                              IconButton(
+                                icon: const Icon(Icons.calendar_month),
+                                onPressed: () async {
+                                  final pickedDate = await _presentDatePicker();
+                                  if (pickedDate != null) {
+                                    setState(() {
+                                      _selectedDate = pickedDate;
+                                    });
+                                  }
+                                },
                               ),
-                              if (fieldState.hasError)
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 6),
-                                  child: Text(
-                                    fieldState.errorText!,
-                                    style: TextStyle(
-                                      color: Theme.of(context).colorScheme.error,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ),
                             ],
-                          );
-                        },
+                          ),
+                          if (_selectedDate == null)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 6),
+                              child: Text(
+                                "Select a date",
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.error,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: 16,
-                ),
+                SizedBox(height: 16),
                 Row(
                   children: [
                     DropdownButton(
@@ -194,17 +177,12 @@ class _NewExpenseState extends State<NewExpense> {
                           .map(
                             (category) => DropdownMenuItem(
                               value: category,
-                              child: Text(
-                                category.name.toUpperCase(),
-                              ),
+                              child: Text(category.name.toUpperCase()),
                             ),
                           )
                           .toList(),
                       onChanged: (value) {
-                        if (value == null) {
-                          return;
-                        }
-      
+                        if (value == null) return;
                         setState(() {
                           _selectedCategory = value;
                         });
@@ -219,12 +197,30 @@ class _NewExpenseState extends State<NewExpense> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        if (_formKey.currentState!.validate()) {
+                        FocusScope.of(context).unfocus();
+                        if (_formKey.currentState!.validate() &&
+                            _selectedDate != null) {
                           _submitExpenseData();
+                        } else if (_selectedDate == null) {
+                          showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: const Text('Invalid input'),
+                              content: const Text('Please select a date.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(ctx);
+                                  },
+                                  child: const Text('Okay'),
+                                )
+                              ],
+                            ),
+                          );
                         }
                       },
                       child: const Text('Save Expense'),
-                    )
+                    ),
                   ],
                 ),
               ],
