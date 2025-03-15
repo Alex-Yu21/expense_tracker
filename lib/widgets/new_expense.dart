@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:expense_tracker/models/expense.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/cupertino.dart';
 
 final DateFormat formatter = DateFormat.yMMMd();
 
@@ -24,16 +26,16 @@ class _NewExpenseState extends State<NewExpense> {
 
   void _submitExpenseData() {
     if (!_formKey.currentState!.validate() || _selectedDate == null) {
-      showDialog(
+      showPlatformDialog(
         context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text('Invalid input'),
-          content: const Text(
+        builder: (ctx) => PlatformAlertDialog(
+          title: PlatformText('Invalid input'),
+          content: PlatformText(
               'Please make sure a valid title, amount, and date are entered.'),
           actions: [
-            TextButton(
+            PlatformDialogAction(
               onPressed: () => Navigator.pop(ctx),
-              child: const Text('Okay'),
+              child: PlatformText('Okay'),
             ),
           ],
         ),
@@ -81,16 +83,16 @@ class _NewExpenseState extends State<NewExpense> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
-                            child: TitleTextFormField(
+                            child: TitlePlatformTextFormField(
                                 controller: _titleController)),
                         const SizedBox(width: 10),
                         Expanded(
-                            child: AmountTextFormField(
+                            child: AmountPlatformTextFormField(
                                 controller: _amountController)),
                       ],
                     )
                   else
-                    TitleTextFormField(controller: _titleController),
+                    TitlePlatformTextFormField(controller: _titleController),
                   const SizedBox(height: 10),
                   if (width >= 600)
                     Row(
@@ -124,7 +126,7 @@ class _NewExpenseState extends State<NewExpense> {
                     Row(
                       children: [
                         Expanded(
-                            child: AmountTextFormField(
+                            child: AmountPlatformTextFormField(
                                 controller: _amountController)),
                         const SizedBox(width: 16),
                         Expanded(
@@ -150,7 +152,7 @@ class _NewExpenseState extends State<NewExpense> {
                       children: [
                         Spacer(),
                         cancelButton(context),
-                        saveButton(),
+                        saveButton(context),
                       ],
                     )
                   else
@@ -166,7 +168,7 @@ class _NewExpenseState extends State<NewExpense> {
                         ),
                         const Spacer(),
                         cancelButton(context),
-                        saveButton(),
+                        saveButton(context),
                       ],
                     ),
                 ],
@@ -178,17 +180,26 @@ class _NewExpenseState extends State<NewExpense> {
     );
   }
 
-  ElevatedButton saveButton() {
-    return ElevatedButton(
+  PlatformElevatedButton saveButton(BuildContext context) {
+    return PlatformElevatedButton(
       onPressed: _submitExpenseData,
-      child: const Text('Save Expense'),
+      child: PlatformText('Save Expense'),
+      material: (_, __) => MaterialElevatedButtonData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+          foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+        ),
+      ),
+      cupertino: (_, __) => CupertinoElevatedButtonData(
+        color: CupertinoTheme.of(context).primaryColor,
+      ),
     );
   }
 
-  TextButton cancelButton(BuildContext context) {
-    return TextButton(
+  PlatformTextButton cancelButton(BuildContext context) {
+    return PlatformTextButton(
       onPressed: () => Navigator.pop(context),
-      child: const Text('Cancel'),
+      child: PlatformText('Cancel'),
     );
   }
 }
@@ -203,7 +214,7 @@ class DatePicker extends StatelessWidget {
   Future<void> _presentDatePicker(BuildContext context) async {
     final now = DateTime.now();
     final firstDate = DateTime(now.year - 1, now.month, now.day);
-    final pickedDate = await showDatePicker(
+    final pickedDate = await showPlatformDatePicker(
       context: context,
       initialDate: now,
       firstDate: firstDate,
@@ -219,11 +230,12 @@ class DatePicker extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Text(selectedDate == null
+        PlatformText(selectedDate == null
             ? 'No date selected'
             : formatter.format(selectedDate!)),
-        IconButton(
-          icon: const Icon(Icons.calendar_month),
+        PlatformIconButton(
+          materialIcon: const Icon(Icons.calendar_month),
+          cupertinoIcon: Icon (CupertinoIcons.calendar),
           onPressed: () => _presentDatePicker(context),
         ),
       ],
@@ -248,7 +260,7 @@ class CategoryDropdown extends StatelessWidget {
         items: Category.values
             .map((category) => DropdownMenuItem(
                   value: category,
-                  child: Text(category.name.toUpperCase()),
+                  child: PlatformText(category.name.toUpperCase()),
                 ))
             .toList(),
         onChanged: (value) {
@@ -259,19 +271,28 @@ class CategoryDropdown extends StatelessWidget {
   }
 }
 
-class AmountTextFormField extends StatelessWidget {
-  const AmountTextFormField({super.key, required this.controller});
+class AmountPlatformTextFormField extends StatelessWidget {
+  const AmountPlatformTextFormField({super.key, required this.controller});
 
   final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
+    return PlatformTextFormField(
       controller: controller,
       keyboardType: TextInputType.number,
-      decoration: const InputDecoration(
-        prefixText: '\$',
-        labelText: 'Amount',
+      material: (_, __) => MaterialTextFormFieldData(
+        decoration: const InputDecoration(
+          prefixText: '\$',
+          labelText: 'Amount',
+        ),
+      ),
+      cupertino: (_, __) => CupertinoTextFormFieldData(
+        prefix: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8),
+          child: Text('\$', style: TextStyle(fontSize: 16)),
+        ),
+        placeholder: 'Amount',
       ),
       validator: (value) {
         final parsedValue = double.tryParse(value ?? '');
@@ -287,17 +308,22 @@ class AmountTextFormField extends StatelessWidget {
   }
 }
 
-class TitleTextFormField extends StatelessWidget {
-  const TitleTextFormField({super.key, required this.controller});
+class TitlePlatformTextFormField extends StatelessWidget {
+  const TitlePlatformTextFormField({super.key, required this.controller});
 
   final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
+    return PlatformTextFormField(
       controller: controller,
       maxLength: 50,
-      decoration: const InputDecoration(labelText: 'Title'),
+      material: (_, __) => MaterialTextFormFieldData(
+        decoration: const InputDecoration(labelText: 'Title'),
+      ),
+      cupertino: (_, __) => CupertinoTextFormFieldData(
+        placeholder: 'Title',
+      ),
       validator: (value) {
         if (value == null || value.trim().isEmpty) {
           return 'Please enter a valid title';

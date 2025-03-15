@@ -2,7 +2,9 @@ import 'package:expense_tracker/widgets/chart/chart.dart';
 import 'package:expense_tracker/widgets/expense_list/expenses_list.dart';
 import 'package:expense_tracker/models/expense.dart';
 import 'package:expense_tracker/widgets/new_expense.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class Expenses extends StatefulWidget {
   const Expenses({super.key});
@@ -29,6 +31,7 @@ class _ExpensesState extends State<Expenses> {
 
   void _openAddExpenseOverlay() {
     showModalBottomSheet(
+      useSafeArea: true,
       isScrollControlled: true,
       context: context,
       builder: (ctx) => NewExpense(onAddExpense: _addExpense),
@@ -49,7 +52,7 @@ class _ExpensesState extends State<Expenses> {
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       duration: const Duration(seconds: 3),
-      content: const Text('Expense deleted.'),
+      content:  PlatformText('Expense deleted.'),
       action: SnackBarAction(
         label: 'Undo',
         onPressed: () {
@@ -66,7 +69,7 @@ class _ExpensesState extends State<Expenses> {
     final width = MediaQuery.of(context).size.width;
 
     Widget mainContent = Center(
-      child: Text('No expense found. Start adding some!'),
+      child: PlatformText('No expense found. Start adding some!'),
     );
 
     if (_registeredExpenses.isNotEmpty) {
@@ -76,12 +79,13 @@ class _ExpensesState extends State<Expenses> {
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Flutter ExpensesTracker'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
+    return PlatformScaffold(
+      appBar: PlatformAppBar(
+        title:  PlatformText('Expenses Tracker'),
+        trailingActions: [
+          PlatformIconButton(
+            materialIcon: const Icon(Icons.add),
+            cupertinoIcon: const  Icon (CupertinoIcons.add ),
             onPressed: _openAddExpenseOverlay,
           ),
         ],
