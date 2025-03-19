@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:expense_tracker/widgets/expenses.dart';
+import 'package:expense_tracker/screens/home_screen/expenses.dart';
 import 'package:expense_tracker/theme/app_themes.dart';
 
 void main() {
