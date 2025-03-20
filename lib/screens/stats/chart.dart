@@ -1,99 +1,117 @@
+import 'package:expense_tracker/theme/app_themes.dart';
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
 
-import 'package:expense_tracker/screens/stats/chart_bar.dart';
-import 'package:expense_tracker/models/expense.dart';
-
-class Chart extends StatelessWidget {
-  const Chart({super.key, required this.expenses});
-
-  final List<Expense> expenses;
-
-  List<ExpenseBucket> get buckets {
-  return [
-    ExpenseBucket.forCategory(expenses, Category.food),
-    ExpenseBucket.forCategory(expenses, Category.leisure),
-    ExpenseBucket.forCategory(expenses, Category.traffic),
-    ExpenseBucket.forCategory(expenses, Category.work),
-    ExpenseBucket.forCategory(expenses, Category.bills),
-    ExpenseBucket.forCategory(expenses, Category.medical),
-    ExpenseBucket.forCategory(expenses, Category.investments),
-    ExpenseBucket.forCategory(expenses, Category.gifts),
-  ];
-}
-
-  double get maxTotalExpense {
-    double maxTotalExpense = 0;
-
-    for (final bucket in buckets) {
-      if (bucket.totalExpenses > maxTotalExpense) {
-        maxTotalExpense = bucket.totalExpenses;
-      }
-    }
-
-    return maxTotalExpense;
-  }
+class Chart extends StatefulWidget {
+  const Chart({super.key});
 
   @override
+  State<Chart> createState() => _ChartState();
+}
+
+class _ChartState extends State<Chart> {
+  @override
   Widget build(BuildContext context) {
-    final isDarkMode =
-        MediaQuery.of(context).platformBrightness == Brightness.dark;
-    return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.symmetric(
-        vertical: 16,
-        horizontal: 8,
-      ),
-      width: double.infinity,
-      height: MediaQuery.of(context).size.width / 2,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        gradient: LinearGradient(
+    return BarChart(mainBarData());
+  }
+
+   BarChartGroupData makeGroupData(int x, double y) {
+    return BarChartGroupData(
+      x: x,
+      barRods: [
+        BarChartRodData(
+          toY: y,
+          width: 10,
+          gradient: LinearGradient(
           colors: [
-            Theme.of(context).colorScheme.primary.withAlpha((0.3 * 255).round()),
-            Theme.of(context).colorScheme.primary.withAlpha((0.0 * 255).round())
+            Theme.of(context)
+                .colorScheme
+                .primary
+                .withAlpha((1 * 255).round()),
+            Theme.of(context)
+                .colorScheme
+                .primary
+                .withAlpha((0.7 * 255).round())
           ],
           begin: Alignment.bottomCenter,
           end: Alignment.topCenter,
         ),
-      ),
-      child: Column(
-        children: [
-          Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                for (final bucket in buckets) 
-                  ChartBar(
-                    fill: bucket.totalExpenses == 0
-                        ? 0
-                        : bucket.totalExpenses / maxTotalExpense,
-                  )
-              ],
-            ),
+          backDrawRodData: BackgroundBarChartRodData(
+            show: true,
+            toY: 6, 
+            color: Colors.white54,
           ),
-          const SizedBox(height: 12),
-          Row(
-            children: buckets
-                .map(
-                  (bucket) => Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      child: Icon(
-                        categoryIcons[bucket.category],
-                        color: isDarkMode
-                            ? Theme.of(context).colorScheme.secondary
-                            : Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withAlpha((0.7 * 255).round()),
-                      ),
-                    ),
-                  ),
-                )
-                .toList(),
-          )
-        ],
-      ),
+        ),
+      ],
     );
+  }
+
+
+  List<BarChartGroupData> showingGroups() {
+    final List<num> values = [2, 3, 2, 4.5, 3.8, 1.5, 4, 3.8];
+
+    return List.generate(values.length, (i) {
+      return makeGroupData(i, values[i].toDouble());
+    });
+  }
+
+  BarChartData mainBarData() {
+    return BarChartData(
+      titlesData: FlTitlesData(
+        show: true,
+        leftTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            getTitlesWidget: leftTitles,
+            reservedSize: 40,
+            interval: 1,
+          ),
+        ),
+        bottomTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            reservedSize: 38,
+            getTitlesWidget: getTitles,
+          ),
+        ),
+        rightTitles: const AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+        topTitles: const AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+      ),
+      borderData: FlBorderData(show: false),
+      gridData: const FlGridData(show: false),
+      barGroups: showingGroups(),
+    );
+  }
+
+  Widget getTitles(double value, TitleMeta meta) {
+    const style = PlatformTextThemes.titleStyle;
+    final labels = ['01', '02', '03', '04', '05', '06', '07', '08'];
+
+    if (value.toInt() >= 0 && value.toInt() < labels.length) {
+      return SideTitleWidget(
+        meta: meta,
+        space: 16,
+        child: Text(labels[value.toInt()], style: style),
+      );
+    }
+    return Container();
+  }
+
+  Widget leftTitles(double value, TitleMeta meta) {
+    const style = PlatformTextThemes.titleStyle;
+    final labels = {1: '1K', 2: '2K', 3: '3K', 4: '4K', 5: '5K'};
+
+    if (labels.containsKey(value.toInt())) {
+      return SideTitleWidget(
+        meta: meta,
+        space: 1,
+        child: Text(labels[value.toInt()]!, style: style),
+      );
+    }
+    return Container();
   }
 }

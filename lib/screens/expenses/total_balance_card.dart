@@ -57,7 +57,7 @@ class TotalBalanceCard extends StatelessWidget {
                 .copyWith(fontSize: 35),
           ),
          const SizedBox(
-            height: 12,
+            height: 15,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(

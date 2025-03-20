@@ -35,13 +35,15 @@ class ExpensesScreen extends StatelessWidget {
             children: [
               const TotalBalanceCard(),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     PlatformText(
                       'Transactions:',
-                      style: PlatformTextThemes.titleStyle.copyWith(fontSize: 14),
+                      style:
+                          PlatformTextThemes.titleStyle.copyWith(fontSize: 14),
                     ),
                     GestureDetector(
                       onTap: () {},
