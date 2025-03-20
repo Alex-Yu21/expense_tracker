@@ -8,14 +8,19 @@ class Chart extends StatelessWidget {
 
   final List<Expense> expenses;
 
-  List<ExpenseBucket> get buckets {
-    return [
-      ExpenseBucket.forCategory(expenses, Category.food),
-      ExpenseBucket.forCategory(expenses, Category.leisure),
-      ExpenseBucket.forCategory(expenses, Category.travel),
-      ExpenseBucket.forCategory(expenses, Category.work),
-    ];
-  }
+ List<ExpenseBucket> get buckets {
+  return [
+    ExpenseBucket.forCategory(expenses, Category.food),
+    ExpenseBucket.forCategory(expenses, Category.leisure),
+    ExpenseBucket.forCategory(expenses, Category.traffic),
+    ExpenseBucket.forCategory(expenses, Category.work),
+    ExpenseBucket.forCategory(expenses, Category.bills),
+    ExpenseBucket.forCategory(expenses, Category.medical),
+    ExpenseBucket.forCategory(expenses, Category.investments),
+    ExpenseBucket.forCategory(expenses, Category.gifts),
+  ];
+}
+
 
   double get maxTotalExpense {
     double maxTotalExpense = 0;

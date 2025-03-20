@@ -17,7 +17,7 @@ class TotalBalanceCard extends StatelessWidget {
       ),
       width: double.infinity,
       height: MediaQuery.of(context).size.width / 2,
-      decoration: BoxDecoration(
+      decoration:  BoxDecoration(
         borderRadius: BorderRadius.circular(8),
         gradient: LinearGradient(
           colors: [
@@ -48,15 +48,15 @@ class TotalBalanceCard extends StatelessWidget {
             'Total balance:',
             style: PlatformTextThemes.titleStyle,
           ),
-          SizedBox(
+          const SizedBox(
             height: 12,
           ),
           PlatformText(
             '\$ 4000.00',
-            style: PlatformTextThemes.titleStyle
+            style:  PlatformTextThemes.titleStyle
                 .copyWith(fontSize: 35),
           ),
-          SizedBox(
+         const SizedBox(
             height: 12,
           ),
           Padding(
@@ -70,7 +70,7 @@ class TotalBalanceCard extends StatelessWidget {
                     Container(
                       width: 20,
                       height: 20,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                           color: Colors.white30,
                           shape: BoxShape.circle),
                       child: Center(
@@ -81,7 +81,7 @@ class TotalBalanceCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(
+                   const SizedBox(
                       width: 10,
                     ),
                     Column(
@@ -110,7 +110,7 @@ class TotalBalanceCard extends StatelessWidget {
                     Container(
                       width: 20,
                       height: 20,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                           color: Colors.white30,
                           shape: BoxShape.circle),
                       child: Center(
@@ -121,7 +121,7 @@ class TotalBalanceCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(
+                   const SizedBox(
                       width: 10,
                     ),
                     Column(

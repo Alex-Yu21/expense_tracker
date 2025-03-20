@@ -18,7 +18,7 @@ CardTheme buildCardTheme(Color cardColor) {
 }
 
 class PlatformTextThemes {
-  static final TextStyle titleStyle = TextStyle(
+  static const TextStyle titleStyle = TextStyle(
     fontWeight: FontWeight.bold,
     fontSize: 16,
   );
