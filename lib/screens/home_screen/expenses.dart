@@ -2,6 +2,8 @@ import 'package:expense_tracker/screens/chart/chart.dart';
 import 'package:expense_tracker/screens/home_screen/expense_list/expenses_list.dart';
 import 'package:expense_tracker/models/expense.dart';
 import 'package:expense_tracker/screens/home_screen/new_expense.dart';
+import 'package:expense_tracker/screens/home_screen/total_balance_card.dart';
+import 'package:expense_tracker/theme/app_themes.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
@@ -88,13 +90,14 @@ class _ExpensesState extends State<Expenses> {
               radius: 16,
             ),
             SizedBox(width: 10),
-            Column( 
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 PlatformText(
-                  'Welcome!', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
+                  'Welcome!',
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
                 ),
-                 PlatformText(
+                PlatformText(
                   'John Doe',
                 ),
               ],
@@ -111,43 +114,49 @@ class _ExpensesState extends State<Expenses> {
         ],
       ),
       bottomNavBar: PlatformNavBar(
+        height: 45,
         items: [
-          BottomNavigationBarItem(icon: Icon(PlatformIcons(context).home)),
-          BottomNavigationBarItem(icon: Icon(Icons.show_chart)),
-          BottomNavigationBarItem(icon: Icon(PlatformIcons(context).person)),
+          BottomNavigationBarItem(
+              icon: Icon(PlatformIcons(context).home, size: 25)),
+          BottomNavigationBarItem(icon: Icon(Icons.show_chart, size: 25)),
+          BottomNavigationBarItem(
+              icon: Icon(PlatformIcons(context).person, size: 25)),
         ],
       ),
       body: width < 600
           ? Column(
               children: [
-                Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.symmetric(
-        vertical: 16,
-        horizontal: 8,
-      ),
-      width: double.infinity,
-      height: MediaQuery.of(context).size.width / 2,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        gradient: LinearGradient(
-          colors: [
-            Theme.of(context).colorScheme.primary.withAlpha((0.3 * 255).round()),
-            Theme.of(context).colorScheme.primary.withAlpha((0.0 * 255).round())
-          ],
-          begin: Alignment.bottomCenter,
-          end: Alignment.topCenter,
-        ),
-      ),
+                TotalBalanceCard(),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      PlatformText(
+                        'Transactions:',
+                        style: PlatformTextThemes.titleStyle.copyWith(
+                          fontSize: 14,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {},
+                        child: PlatformText(
+                          'View All',
+                          style: PlatformTextThemes.titleStyle.copyWith(
+                              fontSize: 14, fontWeight: FontWeight.w400),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                // Chart(expenses: _registeredExpenses),
                 Expanded(child: mainContent),
               ],
             )
           : Row(
               children: [
-                Expanded(child: mainContent),
-                Expanded(child: Chart(expenses: _registeredExpenses)),
+                Expanded(flex: 2, child: TotalBalanceCard()),
+                Expanded(flex: 4, child: mainContent),
               ],
             ),
     );
