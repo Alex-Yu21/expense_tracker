@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:expense_tracker/screens/chart/chart_bar.dart';
+import 'package:expense_tracker/screens/stats/chart_bar.dart';
 import 'package:expense_tracker/models/expense.dart';
 
 class Chart extends StatelessWidget {
@@ -8,7 +8,7 @@ class Chart extends StatelessWidget {
 
   final List<Expense> expenses;
 
- List<ExpenseBucket> get buckets {
+  List<ExpenseBucket> get buckets {
   return [
     ExpenseBucket.forCategory(expenses, Category.food),
     ExpenseBucket.forCategory(expenses, Category.leisure),
@@ -20,7 +20,6 @@ class Chart extends StatelessWidget {
     ExpenseBucket.forCategory(expenses, Category.gifts),
   ];
 }
-
 
   double get maxTotalExpense {
     double maxTotalExpense = 0;

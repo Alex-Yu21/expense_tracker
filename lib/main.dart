@@ -1,7 +1,7 @@
+import 'package:expense_tracker/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:expense_tracker/screens/home_screen/expenses.dart';
 import 'package:expense_tracker/theme/app_themes.dart';
 
 void main() {
@@ -19,7 +19,7 @@ void main() {
             DefaultWidgetsLocalizations.delegate,
             DefaultCupertinoLocalizations.delegate,
           ],
-          home: Expenses(),
+          home: MainScreen(),
         ),
       ),
     ),
