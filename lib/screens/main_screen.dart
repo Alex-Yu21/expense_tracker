@@ -1,7 +1,7 @@
 import 'package:expense_tracker/data/registered_expenses';
 import 'package:expense_tracker/models/expense.dart';
 import 'package:expense_tracker/screens/expenses/expenses_screen.dart';
-import 'package:expense_tracker/screens/expenses/new_expense.dart';
+import 'package:expense_tracker/screens/new_expense.dart';
 import 'package:expense_tracker/screens/stats/stats.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
