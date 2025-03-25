@@ -20,12 +20,12 @@ enum Category {
 const categoryIcons = {
   Category.food: Icons.lunch_dining,
   Category.leisure: Icons.movie,
-  Category.traffic: Icons.directions_car, 
+  Category.traffic: Icons.directions_car,
   Category.work: Icons.work,
-  Category.bills: Icons.receipt_long, 
-  Category.medical: Icons.local_hospital, 
-  Category.investments: Icons.trending_up, 
-  Category.gifts: Icons.card_giftcard, 
+  Category.bills: Icons.receipt_long,
+  Category.medical: Icons.local_hospital,
+  Category.investments: Icons.trending_up,
+  Category.gifts: Icons.card_giftcard,
 };
 
 class Expense {

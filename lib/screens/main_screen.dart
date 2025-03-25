@@ -16,7 +16,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedTabIndex = 0;
-  
+
   void _addExpense(Expense expense) {
     setState(() {
       registeredExpenses.add(expense);
@@ -63,10 +63,11 @@ class _MainScreenState extends State<MainScreen> {
             const SizedBox(width: 10),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children:  [
+              children: [
                 PlatformText(
                   'Welcome!',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w300),
+                  style: const TextStyle(
+                      fontSize: 12, fontWeight: FontWeight.w300),
                 ),
                 PlatformText('John Doe'),
               ],

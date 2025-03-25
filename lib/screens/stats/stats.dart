@@ -25,9 +25,9 @@ class StatsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 15),
             Container(
-              padding: EdgeInsets.symmetric(vertical: 10),
+              padding: const EdgeInsets.symmetric(vertical: 10),
               width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.width*0.9,
+              height: MediaQuery.of(context).size.width * 0.9,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
                 color: kColorScheme.secondaryContainer,
@@ -41,19 +41,20 @@ class StatsScreen extends StatelessWidget {
               ),
               child: Chart(expenses: registeredExpenses),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(formattedDate, style: PlatformTextThemes.titleStyle),
-                  Text('data', style: PlatformTextThemes.titleStyle),
+                  const Text('data', style: PlatformTextThemes.titleStyle),
                 ],
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Expanded(
+              // TODO ListView.builder
               child: ListView(
                 physics: const BouncingScrollPhysics(),
                 children: [
@@ -75,7 +76,7 @@ class StatsScreen extends StatelessWidget {
                             "category.title",
                             style: PlatformTextThemes.titleStyle,
                           ),
-                          Spacer(),
+                          const Spacer(),
                           PlatformText("-\$",
                               style: PlatformTextThemes.titleStyle),
                         ],

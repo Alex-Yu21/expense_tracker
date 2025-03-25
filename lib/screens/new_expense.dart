@@ -150,7 +150,7 @@ class _NewExpenseState extends State<NewExpense> {
                   if (width >= 600)
                     Row(
                       children: [
-                        Spacer(),
+                        const Spacer(),
                         cancelButton(context),
                         saveButton(context),
                       ],
@@ -235,7 +235,7 @@ class DatePicker extends StatelessWidget {
             : formatter.format(selectedDate!)),
         PlatformIconButton(
           materialIcon: const Icon(Icons.calendar_month),
-          cupertinoIcon: Icon (CupertinoIcons.calendar),
+          cupertinoIcon: Icon(CupertinoIcons.calendar),
           onPressed: () => _presentDatePicker(context),
         ),
       ],
