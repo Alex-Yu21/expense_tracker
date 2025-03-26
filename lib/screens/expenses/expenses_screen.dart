@@ -7,7 +7,6 @@ import 'package:expense_tracker/theme/app_themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:expense_tracker/models/expense.dart';
 
 class ExpensesScreen extends StatelessWidget {
   const ExpensesScreen({super.key});

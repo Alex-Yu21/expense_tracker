@@ -29,12 +29,13 @@ const categoryIcons = {
 };
 
 class Expense {
-  Expense(
-      {required this.title,
-      required this.amount,
-      required this.date,
-      required this.category})
-      : id = uuid.v4();
+  Expense({
+    required this.id,
+    required this.title,
+    required this.amount,
+    required this.date,
+    required this.category,
+  });
 
   final String id;
   final String title;
@@ -44,6 +45,25 @@ class Expense {
 
   String get formattedDate {
     return formatter.format(date);
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'title': title,
+      'amount': amount,
+      'date': date.toIso8601String(),
+      'category': category.name,
+    };
+  }
+
+  factory Expense.fromMap(Map<String, dynamic> map, String id) {
+    return Expense(
+      id: id,
+      title: map['title'],
+      amount: map['amount'],
+      date: DateTime.parse(map['date']),
+      category: Category.values.firstWhere((c) => c.name == map['category']),
+    );
   }
 }
 

@@ -9,3 +9,8 @@ class ExpensesLoaded extends ExpenseState {
 
   ExpensesLoaded(this.expenses);
 }
+
+class ExpensesError extends ExpenseState {
+  final String message;
+  ExpensesError(this.message);
+}

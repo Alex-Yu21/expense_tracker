@@ -1,6 +1,7 @@
 import 'package:expense_tracker/blocs/expense_bloc.dart';
 import 'package:expense_tracker/blocs/expense_event.dart';
 import 'package:expense_tracker/screens/main_screen.dart';
+import 'package:expense_tracker/services/expense_firestore_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,10 +15,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   Bloc.observer = SimpleBlocObserver();
+  final firestoreService = ExpenseFirestoreService();
   runApp(
     PlatformProvider(
       builder: (context) => BlocProvider(
-        create: (context) => ExpenseBloc()..add(LoadExpenses()),
+        create: (context) => ExpenseBloc(firestoreService: firestoreService)
+          ..add(LoadExpenses()),
         child: PlatformTheme(
           themeMode: ThemeMode.system,
           materialLightTheme: MaterialAppThemes.lightTheme,

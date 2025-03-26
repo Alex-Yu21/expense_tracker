@@ -47,6 +47,7 @@ class _NewExpenseState extends State<NewExpense> {
     final enteredAmount = double.parse(_amountController.text);
 
     final newExpense = Expense(
+      id: uuid.v4(),
       title: _titleController.text.trim(),
       amount: enteredAmount,
       date: _selectedDate!,
