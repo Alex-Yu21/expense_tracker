@@ -1,5 +1,3 @@
-import 'package:expense_tracker/data/registered_expenses';
-import 'package:expense_tracker/models/expense.dart';
 import 'package:expense_tracker/screens/expenses/expenses_screen.dart';
 import 'package:expense_tracker/screens/new_expense.dart';
 import 'package:expense_tracker/screens/stats/stats.dart';
@@ -17,18 +15,12 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _selectedTabIndex = 0;
 
-  void _addExpense(Expense expense) {
-    setState(() {
-      registeredExpenses.add(expense);
-    });
-  }
-
   void _openAddExpenseOverlay() {
     showModalBottomSheet(
       useSafeArea: true,
       isScrollControlled: true,
       context: context,
-      builder: (ctx) => NewExpense(onAddExpense: _addExpense),
+      builder: (ctx) => const NewExpense(),
     );
   }
 
@@ -41,14 +33,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> pages = [
-      ExpensesScreen(
-        expenses: registeredExpenses,
-        onRemoveExpense: (expense) {
-          setState(() {
-            registeredExpenses.remove(expense);
-          });
-        },
-      ),
+      const ExpensesScreen(),
       const StatsScreen(),
     ];
 

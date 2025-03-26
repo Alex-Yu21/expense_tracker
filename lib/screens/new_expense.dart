@@ -1,16 +1,17 @@
+import 'package:expense_tracker/blocs/expense_bloc.dart';
+import 'package:expense_tracker/blocs/expense_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:expense_tracker/models/expense.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 final DateFormat formatter = DateFormat.yMMMd();
 
 class NewExpense extends StatefulWidget {
-  const NewExpense({super.key, required this.onAddExpense});
-
-  final void Function(Expense expense) onAddExpense;
+  const NewExpense({super.key});
 
   @override
   State<NewExpense> createState() => _NewExpenseState();
@@ -45,14 +46,15 @@ class _NewExpenseState extends State<NewExpense> {
 
     final enteredAmount = double.parse(_amountController.text);
 
-    widget.onAddExpense(
-      Expense(
-        title: _titleController.text.trim(),
-        amount: enteredAmount,
-        date: _selectedDate!,
-        category: _selectedCategory,
-      ),
+    final newExpense = Expense(
+      title: _titleController.text.trim(),
+      amount: enteredAmount,
+      date: _selectedDate!,
+      category: _selectedCategory,
     );
+
+    context.read<ExpenseBloc>().add(AddExpense(newExpense));
+
     Navigator.pop(context);
   }
 
@@ -235,7 +237,7 @@ class DatePicker extends StatelessWidget {
             : formatter.format(selectedDate!)),
         PlatformIconButton(
           materialIcon: const Icon(Icons.calendar_month),
-          cupertinoIcon: Icon(CupertinoIcons.calendar),
+          cupertinoIcon: const Icon(CupertinoIcons.calendar),
           onPressed: () => _presentDatePicker(context),
         ),
       ],

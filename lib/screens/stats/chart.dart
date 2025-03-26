@@ -1,20 +1,16 @@
+import 'package:expense_tracker/blocs/expense_bloc.dart';
+import 'package:expense_tracker/blocs/expense_state.dart';
 import 'package:expense_tracker/models/expense.dart';
 import 'package:expense_tracker/theme/app_themes.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class Chart extends StatefulWidget {
-  const Chart({required this.expenses, super.key});
+class Chart extends StatelessWidget {
+  const Chart({super.key});
 
-  final List<Expense> expenses;
-
-  @override
-  State<Chart> createState() => _ChartState();
-}
-
-class _ChartState extends State<Chart> {
-  List<double> calculateWeeklyExpenses() {
+  List<double> calculateWeeklyExpenses(List<Expense> expenses) {
     final now = DateTime.now();
     final List<double> weeklySums = [];
 
@@ -22,7 +18,7 @@ class _ChartState extends State<Chart> {
       final weekStart = now.subtract(Duration(days: i * 7));
       final weekEnd = weekStart.add(const Duration(days: 7));
 
-      final weekSum = widget.expenses
+      final weekSum = expenses
           .where((e) => e.date.isAfter(weekStart) && e.date.isBefore(weekEnd))
           .fold(0.0, (sum, e) => sum + e.amount);
 
@@ -46,38 +42,48 @@ class _ChartState extends State<Chart> {
     }
   }
 
-  double get total {
-    return widget.expenses.fold(0.0, (sum, e) => sum + e.amount);
+  double getTotal(List<Expense> expenses) {
+    return expenses.fold(0.0, (sum, e) => sum + e.amount);
   }
 
   @override
   Widget build(BuildContext context) {
-    final weeklyValues = calculateWeeklyExpenses();
+    return BlocBuilder<ExpenseBloc, ExpenseState>(
+      builder: (context, state) {
+        if (state is! ExpensesLoaded) {
+          return const SizedBox.shrink();
+        }
 
-    return Column(
-      children: [
-        const SizedBox(height: 8),
-        PlatformText(
-          "3 months",
-          style: PlatformTextThemes.titleStyle
-              .copyWith(fontWeight: FontWeight.w200),
-        ),
-        PlatformText(
-          total.toStringAsFixed(0),
-          style: PlatformTextThemes.titleStyle.copyWith(fontSize: 30),
-        ),
-        const SizedBox(height: 12),
-        AspectRatio(
-          aspectRatio: 1.6,
-          child: BarChart(mainBarData(weeklyValues)),
-        ),
-      ],
+        final expenses = state.expenses;
+        final weeklyValues = calculateWeeklyExpenses(expenses);
+        final total = getTotal(expenses);
+        final maxY = findMaxY(weeklyValues);
+
+        return Column(
+          children: [
+            const SizedBox(height: 8),
+            PlatformText(
+              "3 months",
+              style: PlatformTextThemes.titleStyle
+                  .copyWith(fontWeight: FontWeight.w200),
+            ),
+            PlatformText(
+              total.toStringAsFixed(0),
+              style: PlatformTextThemes.titleStyle.copyWith(fontSize: 30),
+            ),
+            const SizedBox(height: 12),
+            AspectRatio(
+              aspectRatio: 1.6,
+              child: BarChart(mainBarData(context, weeklyValues, maxY)),
+            ),
+          ],
+        );
+      },
     );
   }
 
-  BarChartData mainBarData(List<double> values) {
-    final maxY = findMaxY(values);
-
+  BarChartData mainBarData(
+      BuildContext context, List<double> values, double maxY) {
     return BarChartData(
       maxY: maxY,
       titlesData: FlTitlesData(
@@ -106,17 +112,19 @@ class _ChartState extends State<Chart> {
       ),
       borderData: FlBorderData(show: false),
       gridData: const FlGridData(show: false),
-      barGroups: showingGroups(values),
+      barGroups: showingGroups(context, values, maxY),
     );
   }
 
-  List<BarChartGroupData> showingGroups(List<double> values) {
+  List<BarChartGroupData> showingGroups(
+      BuildContext context, List<double> values, double maxY) {
     return List.generate(values.length, (i) {
-      return makeGroupData(i, values[i]);
+      return makeGroupData(context, i, values[i], maxY);
     });
   }
 
-  BarChartGroupData makeGroupData(int x, double y) {
+  BarChartGroupData makeGroupData(
+      BuildContext context, int x, double y, double maxY) {
     return BarChartGroupData(
       x: x,
       barRods: [
@@ -136,7 +144,7 @@ class _ChartState extends State<Chart> {
           ),
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
-            toY: findMaxY(calculateWeeklyExpenses()),
+            toY: maxY,
             color: Colors.white54,
           ),
         ),

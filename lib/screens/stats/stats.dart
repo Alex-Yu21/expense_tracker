@@ -1,9 +1,12 @@
-import 'package:expense_tracker/data/registered_expenses';
+import 'package:expense_tracker/blocs/expense_bloc.dart';
+import 'package:expense_tracker/blocs/expense_state.dart';
 import 'package:expense_tracker/screens/stats/chart.dart';
 import 'package:expense_tracker/theme/app_themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:expense_tracker/models/expense.dart';
 
 class StatsScreen extends StatelessWidget {
   const StatsScreen({super.key});
@@ -39,7 +42,7 @@ class StatsScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              child: Chart(expenses: registeredExpenses),
+              child: const Chart(),
             ),
             const SizedBox(height: 10),
             Padding(
@@ -48,42 +51,77 @@ class StatsScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(formattedDate, style: PlatformTextThemes.titleStyle),
-                  const Text('data', style: PlatformTextThemes.titleStyle),
+                  const Text('Latest', style: PlatformTextThemes.titleStyle),
                 ],
               ),
             ),
             const SizedBox(height: 10),
             Expanded(
-              // TODO ListView.builder
-              child: ListView(
-                physics: const BouncingScrollPhysics(),
-                children: [
-                  Card(
-                    margin: const EdgeInsets.only(bottom: 10),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 16),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.add,
-                            size: 40,
-                            color: kColorScheme.onPrimaryContainer,
+              child: BlocBuilder<ExpenseBloc, ExpenseState>(
+                builder: (context, state) {
+                  if (state is! ExpensesLoaded) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  final expenses = state.expenses;
+
+                  if (expenses.isEmpty) {
+                    return Center(
+                      child: PlatformText('No transactions yet.'),
+                    );
+                  }
+
+                  final latestExpenses = List<Expense>.from(expenses)
+                    ..sort((a, b) => b.date.compareTo(a.date));
+
+                  return ListView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: latestExpenses.length,
+                    itemBuilder: (context, index) {
+                      final expense = latestExpenses[index];
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 10),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 16),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(
+                                categoryIcons[expense.category],
+                                size: 40,
+                                color: kColorScheme.onPrimaryContainer,
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    PlatformText(
+                                      expense.title,
+                                      style: PlatformTextThemes.titleStyle,
+                                    ),
+                                    PlatformText(
+                                      DateFormat.yMMMd().format(expense.date),
+                                      style: PlatformTextThemes.titleStyle
+                                          .copyWith(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w300),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              PlatformText(
+                                '-\$${expense.amount.toStringAsFixed(2)}',
+                                style: PlatformTextThemes.titleStyle,
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: 12),
-                          PlatformText(
-                            "category.title",
-                            style: PlatformTextThemes.titleStyle,
-                          ),
-                          const Spacer(),
-                          PlatformText("-\$",
-                              style: PlatformTextThemes.titleStyle),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
             )
           ],
